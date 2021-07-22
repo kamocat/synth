@@ -1,0 +1,2 @@
+plot 'dat.csv' with lines
+pause -1
