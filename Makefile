@@ -1,10 +1,10 @@
 all: build run plot
 
 build: synth.c
-	gcc synth.c -o synth.exec
+	g++ synth_tb.cpp synth.c -o synth.out
 
-run: synth.exec
-	./synth.exec > dat.csv
+run: synth.out
+	./synth.out
 
-plot: dat.csv
-	gnuplot plot_settings
+plot: example.wav
+	audacity example.wav
