@@ -1,10 +1,13 @@
-all: build run plot
+all: build run play
 
-build: synth.c
-	g++ synth_tb.cpp synth.c -o synth.out
+build: synth.c synth_tb.cpp
+	g++ -g -ggdb synth_tb.cpp synth.c -o synth.out
 
 run: synth.out
 	./synth.out
 
 plot: example.wav
-	audacity example.wav
+	audacity example.wav &
+
+play: example.wav
+	mplayer example.wav
