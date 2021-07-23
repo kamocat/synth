@@ -10,4 +10,4 @@ plot: example.wav
 	audacity example.wav &
 
 play: example.wav
-	mplayer example.wav
+	mplayer -really-quiet example.wav
