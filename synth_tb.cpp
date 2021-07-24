@@ -31,7 +31,7 @@ int main()
   test_mul8(-127,-127,126);
   test_mul8(127,0,0);
   test_mul8(64,2,1);
-  ofstream f( "example.wav", ios::binary );
+  ofstream f( "synth.wav", ios::binary );
 
   // Write the file headers
   f << "RIFF----WAVEfmt ";     // (chunk size to be filled in later)

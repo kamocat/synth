@@ -1,13 +1,14 @@
+fname = synth
 all: build run play
 
-build: synth.c synth_tb.cpp
-	g++ -g -ggdb synth_tb.cpp synth.c -o synth.out
+build: $(fname).c $(fname)_tb.cpp
+	g++ -g -ggdb $(fname)_tb.cpp $(fname).c -o $(fname).out
 
-run: synth.out
-	./synth.out
+run: $(fname).out
+	./$(fname).out
 
-plot: example.wav
-	audacity example.wav &
+plot: $(fname).wav
+	audacity $(fname).wav &
 
 play: example.wav
-	mplayer -really-quiet example.wav
+	mplayer -really-quiet $(fname).wav

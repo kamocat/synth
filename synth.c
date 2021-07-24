@@ -1,20 +1,24 @@
 #include "synth.h"
-#define N 9
+#define N sizeof(frequencies)
 
-int8_t amplitudes[N]  = { 5, 15, 25, 15, 10, 5, 1, 1,1 };
-int8_t frequencies[N] = { 2,3,4,5,6,7,8,9,10 };
+int8_t frequencies[] = { 2,6,10,14,16 };
+int8_t amplitudes[N]  = { 100,-33,20,-17,13 };
 // Phase adjustments can be made by changing the initialization
-int8_t p[N*2] = {0, 100, 100, 100, 100, 100,   0,  0, 100,
-                 100,   0,   0,   0,   0,   0,   100,100,   0};
+int8_t p[N*2];
 
 void synth_init(void){
+  for(int i=0; i<N; ++i){
+    p[i]=100;
+    p[i+N]=0;
+  }
 }
 
 int8_t synth(void){
   int16_t sum = 0;
   int16_t m;
   for(int i=0; i<N; ++i){
-    m = triangle(p+i,p+i+N,frequencies[i]);
+    m = minsky(p+i,p+i+N,frequencies[i]);
+    //m = triangle(p+i,p+i+N,frequencies[i]);
     m *= amplitudes[i];
     sum += m;
   }
