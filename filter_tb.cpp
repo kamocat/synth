@@ -30,7 +30,7 @@ int main()
   test_interp(0,100,128,50);
   test_interp(0,100,0,0);
   test_interp(0,100,255,99);
-  test_interp(-100,100,64,-49);
+  test_interp(-100,100,32,-75);
   test_interp(-100,0,0,-100);
   test_interp(0,-100,128,-50);
   ofstream f( "filter.wav", ios::binary );

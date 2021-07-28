@@ -1,15 +1,14 @@
-fname = filter
-all: build run play
-#all: build run plot
+fname = fm
+all: play
 
 build: $(fname).c $(fname)_tb.cpp
-	g++ -g -ggdb $(fname)_tb.cpp $(fname).c -o $(fname).out
+	g++ -g -ggdb $(fname)_tb.cpp $(fname).c synth.c -o $(fname).out
 
-run: $(fname).out
+run: build
 	./$(fname).out
 
-plot: build run
-	audacity $(fname).wav &
+plot: run
+	audacity $(fname).wav &> ./audacity.log &
 
-play: $(fname).wav
+play: run
 	mplayer -really-quiet $(fname).wav
