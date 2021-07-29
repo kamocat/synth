@@ -1,10 +1,4 @@
 #include <stdint.h>
-void synth_init(void);
-
-/** Outputs a tone point-by-point.
- * Uses internal state for storage, in classic embedded fasion
- */
-int8_t synth(void);
 
 /** Computes the next step in the circle
  * assumes x and y range between -120 and 120.

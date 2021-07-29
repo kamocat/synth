@@ -42,10 +42,11 @@ int main()
   int8_t mem[2];
   uint8_t c1, c2;
   int8_t out;
+  init_fm();
   for (int i = 0; i < N; ++i)
   {
     c1 = i / 1000;
-    out = fm(c1, 60);
+    out = fm(16, 40);
     write_word( f, out+128, 1 );
   }
 

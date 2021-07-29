@@ -1,4 +1,4 @@
-pitch = 657*2*pi;
+pitch = 441*2*pi;
 fs = 44100;
 seconds = 4;
 n = fs*seconds;
