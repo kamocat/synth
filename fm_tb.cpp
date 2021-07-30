@@ -37,7 +37,7 @@ int main()
 
   // Write the audio samples
   int hz = 44100;
-  double seconds = 10;
+  double seconds = 5;
   int N = hz * seconds;  // total number of samples
   int8_t mem[2];
   uint8_t c1, c2;
@@ -46,7 +46,7 @@ int main()
   for (int i = 0; i < N; ++i)
   {
     c1 = i / 1000;
-    out = fm(16, 40);
+    out = fm(16, 255-c1, 3);
     write_word( f, out+128, 1 );
   }
 

@@ -1,18 +1,21 @@
 #include "fm.h"
+#include "table.hpp"
 
-int8_t p[4];
+SineTable f = SineTable();
+uint8_t p[2];
 
 void init_fm(void){
   for(int i=0; i<2; ++i){
-    p[2*i]=100;
-    p[2*i+1] = 0;
+    p[i] = 0;
   }
 }
 
-int8_t fm(uint8_t rate, uint8_t level){
-  int16_t v = minsky(p, p+1, rate);
+int8_t fm(uint8_t rate, uint8_t level, uint8_t pitch){
+  p[0] += rate;
+  p[1] += pitch; // Carrier frequency
+  int16_t v = f.lookup(p[0]);
   v *= level;
   v /= 256;
-  v += 5; // Carrier frequency
-  return minsky(p+2, p+3, v);
+  v += p[1];
+  return f.lookup(v);
 }

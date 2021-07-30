@@ -1,8 +1,8 @@
-fname = table
+fname = fm
 all: play
 
 build: $(fname).c* $(fname)_tb.cpp
-	g++ -g -ggdb $(fname)_tb.cpp $(fname).c* tone.c -o $(fname).out
+	g++ -g -ggdb $(fname)_tb.cpp table.cpp fm.c tone.c -o $(fname).out
 
 run: build
 	./$(fname).out
