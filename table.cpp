@@ -35,17 +35,28 @@ Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t re
   state = idle;
   time = 0;
   // Attack slopes from 0 to full value
-  a = limit / attack; 
+  if(attack > 0){
+    a = limit / attack; 
+  } else {
+    a = limit;
+  }
   // Sustain is the level to hold at
   s = sustain; 
   // Decay slopes from full value to sustain level
   d = 256 - sustain;
   d <<= 7;
-  d /= decay;
+  if(decay > 0) // Catch divide-by-zero
+    d /= decay;
   // Release slopes from sustain down to zero
-  r = s;
-  r <<= 7;
-  r /= release;
+    r = s;
+    r <<= 7;
+  if(release > 0) // Catch divide-by-zero
+    r /= release;
+  /* Divide-by-zero issue:
+  ** These should be integer divides, which have no issue with zero-division.
+  ** However, they are compiling as floating-point division, and throwing
+  ** exceptions when the divisor is zero. So this is a workaround.
+  */
 }
 
 uint8_t Envelope::update(uint8_t dt, bool pressed){

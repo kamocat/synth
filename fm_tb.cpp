@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "fm.h"
+#include "table.hpp"
 using namespace std;
 
 namespace little_endian_io
@@ -41,12 +42,16 @@ int main()
   int N = hz * seconds;  // total number of samples
   int8_t mem[2];
   uint8_t c1, c2;
-  int8_t out;
+  int16_t out;
   init_fm();
+  Envelope amp = Envelope(10,3000,0,0);
   for (int i = 0; i < N; ++i)
   {
     c1 = i / 1000;
-    out = fm(16, 255-c1, 3);
+    uint8_t dt = i%44?0:1;
+    out = amp.update(dt, 0==i);
+    out *= fm(16, 255-c1, 3);
+    out >>= 8;
     write_word( f, out+128, 1 );
   }
 
