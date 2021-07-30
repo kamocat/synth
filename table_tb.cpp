@@ -37,15 +37,15 @@ int main()
 
   // Write the audio samples
   int hz = 44100;
-  double seconds = 2.5;
+  double seconds = 1;
   int N = hz * seconds;  // total number of samples
   int16_t out;
   SineTable cos = SineTable();
-  Envelope e = Envelope(100,50,200,20);
+  Envelope e = Envelope(100,50,200,200);
   for (int i = 0; i < N ; ++i)
   {
     uint8_t dt = 0==i%44?1:0;
-    out = e.update(dt, i<hz*2);
+    out = e.update(dt, i<hz*.5);
     out *= cos.lookup(i);
     out >>= 8;
     write_word( f, out+128, 1 );

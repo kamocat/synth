@@ -49,10 +49,11 @@ Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t re
 }
 
 uint8_t Envelope::update(uint8_t dt, bool pressed){
+  uint8_t tmp;
   switch(state){
     case at:
       time += dt * a;
-      if( time < limit ){
+      if( time >= 0 ){
         return time >> 7;
       } else {
         state = dec;
@@ -61,9 +62,10 @@ uint8_t Envelope::update(uint8_t dt, bool pressed){
       }
     case dec:
       time -= dt * d;
-      if( time > 0 ){
-        return time>>7;
-      } else
+      tmp = time >> 7;
+      if( tmp > s )
+        return tmp;
+      else
         state = sus;
     case sus:
       if( pressed )
