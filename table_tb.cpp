@@ -39,11 +39,15 @@ int main()
   int hz = 44100;
   double seconds = 2.5;
   int N = hz * seconds;  // total number of samples
-  int8_t out;
+  int16_t out;
   SineTable cos = SineTable();
-  for (int i = 0; i < 256; ++i)
+  Envelope e = Envelope(100,50,200,20);
+  for (int i = 0; i < N ; ++i)
   {
-    out = cos.lookup(i);
+    uint8_t dt = 0==i%44?1:0;
+    out = e.update(dt, i<hz*2);
+    out *= cos.lookup(i);
+    out >>= 8;
     write_word( f, out+128, 1 );
   }
 

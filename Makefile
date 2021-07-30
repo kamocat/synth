@@ -1,4 +1,4 @@
-fname = fm
+fname = table
 all: play
 
 build: $(fname).c* $(fname)_tb.cpp

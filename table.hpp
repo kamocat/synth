@@ -12,4 +12,21 @@ class SineTable{
     int8_t lookup(int8_t index);
 };
 
+
+class Envelope{
+    const uint16_t limit = 0x8000;
+    uint16_t a, d, r;
+    uint8_t s;
+    int16_t time;
+    enum {
+      idle, at, dec, sus, rel
+    }state;
+  public:
+    // Attack, Decay, and Release are times in milliseconds
+    Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release);
+    uint8_t update(uint8_t dt, bool pressed);
+};
+
+
+
 #endif

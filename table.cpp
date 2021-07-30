@@ -31,7 +31,58 @@ int8_t SineTable::lookup(int8_t index){
   return val;
 }
 
+Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release){
+  state = idle;
+  time = 0;
+  // Attack slopes from 0 to full value
+  a = limit / attack; 
+  // Sustain is the level to hold at
+  s = sustain; 
+  // Decay slopes from full value to sustain level
+  d = 256 - sustain;
+  d <<= 7;
+  d /= decay;
+  // Release slopes from sustain down to zero
+  r = s;
+  r <<= 7;
+  r /= release;
+}
 
-
-
-
+uint8_t Envelope::update(uint8_t dt, bool pressed){
+  switch(state){
+    case at:
+      time += dt * a;
+      if( time < limit ){
+        return time >> 7;
+      } else {
+        state = dec;
+        time = limit - 1;
+        return 255;
+      }
+    case dec:
+      time -= dt * d;
+      if( time > 0 ){
+        return time>>7;
+      } else
+        state = sus;
+    case sus:
+      if( pressed )
+        return s;
+      else{
+        time = s << 7;
+        state = rel;
+      }
+    case rel:
+      time -= dt * r;
+      if( time > 0){
+        if(pressed)
+          state = at;
+        return time>>7;
+      }else
+        state = idle;
+    default:
+      if(pressed)
+        state = at;
+      return 0;
+  }
+}
