@@ -1,45 +1,33 @@
-#include "table.h"
-#include "tone.h" // for minsky
+#include "table.hpp"
 
 SineTable::SineTable(){
-  len = 17;
-  int8_t step = 8*3;
-  int8_t x=120;
+  len = 65;
+  const int8_t step = 3;
+  const int8_t bits = 2; // Bit space of step
+  const int8_t pad = 8 - bits; // Extra padding for better precision
+  int16_t x = 127<<pad;
+  int16_t y = 0;
   data = new int8_t[len];
   for(uint8_t i = 0; i<len; ++i){
-    minsky(&x, data+i, step);
+    y += (x*step)>>7;
+    x -= (y*step)>>7;
+    data[i] = x>>pad;
   }
 }
 
 SineTable::~SineTable(){
   delete data;
+  len = 0;
 }
 
 int8_t SineTable::lookup(int8_t index){
-  if(index<0)
-    index = -index; // Odd symmetry
-  if(index & 0x40)
-    index = 0x40-index; // Even symmetry
-
-  //With symmetry, we have taken care of 2 bits.
-  //We still have 4 bits of index left, and 2 bits for interpolation
-  uint8_t inter = index & 0x3;
-  index >>= 2;
   int8_t val;
-  int8_t diff = data[index] - data[index+1];
-  switch(inter){ // interpolate
-    case 1:
-      val = data[index] + diff/4;
-      break;
-    case 2:
-      val = data[index] + diff/2;
-      break;
-    case 3:
-      val = data[index+1] - diff/4;
-      break;
-    default:
-      val = data[index];
-  }
+  if(index<0)
+    index = ~index; // Even symmetry around 0
+  if(index > 0x40)
+    val = -data[0x7F - index]; // Odd symmetry around pi/2
+  else
+    val = data[index];
   return val;
 }
 
