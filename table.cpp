@@ -130,3 +130,8 @@ uint8_t Logvelope::exp2(uint8_t x){
     tmp >>= -mag;
   return tmp;
 }
+
+uint8_t Logvelope::update(uint8_t dt, bool pressed){
+  uint8_t ret = Envelope::update(dt, pressed);
+  return exp2(ret);
+}

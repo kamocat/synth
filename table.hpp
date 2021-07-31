@@ -31,6 +31,8 @@ class Logvelope: public Envelope{
   public:
     static uint8_t log2(uint8_t x);
     static uint8_t exp2(uint8_t x);
+    uint8_t update(uint8_t dt, bool pressed);
+    Logvelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release):Envelope(attack, decay, log2(sustain), release){}
 };
 
 

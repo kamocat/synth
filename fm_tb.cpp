@@ -44,7 +44,7 @@ int main()
   uint8_t c1, c2;
   int16_t out;
   init_fm();
-  Envelope amp = Envelope(10,3000,0,0);
+  Logvelope amp = Logvelope(10,3000,0,0);
   for (int i = 0; i < N; ++i)
   {
     c1 = i / 1000;
