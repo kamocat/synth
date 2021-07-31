@@ -27,6 +27,11 @@ class Envelope{
     uint8_t update(uint8_t dt, bool pressed);
 };
 
+class Logvelope: public Envelope{
+  public:
+    static uint8_t log2(uint8_t x);
+    static uint8_t exp2(uint8_t x);
+};
 
 
 #endif

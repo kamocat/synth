@@ -99,3 +99,34 @@ uint8_t Envelope::update(uint8_t dt, bool pressed){
       return 0;
   }
 }
+
+uint8_t Logvelope::log2(uint8_t x){
+  uint8_t tmp = x;
+  int8_t mag = 0;
+  for(; tmp>>=1; ++mag);
+  tmp = mag;
+  mag -= 5;
+  if(mag > 0)
+    x >>= mag;
+  else
+    x <<= -mag;
+  x &= 0x1F;
+  x |= tmp<<5;
+  return x;
+}
+
+uint8_t Logvelope::exp2(uint8_t x){
+  /* Exponential mapping of 8-bit integer.
+  ** Because log2(8) is 3, we are treating this as a 3.5 fixed-point input
+  ** Where the integer portion determines the power, and the fractional
+  ** portion remains linear
+  */
+  int8_t mag = x>>5; // The first 3 bits determine gross magnitude
+  uint8_t tmp = x & 0x3F | 0x20; // Make sure leading bit is 1
+  mag -= 5;
+  if(mag>0)
+    tmp <<= mag;
+  else
+    tmp >>= -mag;
+  return tmp;
+}

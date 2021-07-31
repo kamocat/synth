@@ -5,6 +5,33 @@
 #include "table.hpp"
 using namespace std;
 
+void test_log2(void){
+  // Is it monotonic?
+  int next, prev;
+  prev = 0;
+  for(int i = 0; i < 256; ++i){
+    next = Logvelope::log2(i);
+    if(next<prev){
+      cout<<"log2 is not monotonic";
+      break;
+    }
+    prev = next;
+  }
+}
+void test_exp2(void){
+  int next, prev;
+  // Is it monotonic?
+  prev = 0;
+  for(int i = 0; i < 256; ++i){
+    next = Logvelope::exp2(i);
+    if(next<prev){
+      cout<<"exp2 is not monotonic";
+      break;
+    }
+    prev = next;
+  }
+}
+
 namespace little_endian_io
 {
   template <typename Word>
@@ -19,6 +46,8 @@ using namespace little_endian_io;
 
 int main()
 {
+  test_log2();
+  test_exp2();
   ofstream f( "table.wav", ios::binary );
 
   // Write the file headers
