@@ -1,8 +1,8 @@
 fname = table
-all: play
+all: plot
 
 build: $(fname).c* $(fname)_tb.cpp
-	g++ -g -ggdb $(fname)_tb.cpp table.cpp fm.c audio.cpp tone.c -o $(fname).out
+	g++ -g -ggdb $(fname)_tb.cpp table.cpp filter.c fm.c audio.cpp tone.c -o $(fname).out
 
 run: build
 	./$(fname).out
