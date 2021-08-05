@@ -13,16 +13,17 @@ class SineTable{
 
 
 class Envelope{
-    const uint16_t limit = 0x8000;
-    uint16_t a, d, r;
+    const short shift = 23;
+    const uint32_t limit = 0x80000000;
+    uint32_t a, d, r;
     uint8_t s;
-    int16_t time;
+    int32_t time;
     enum {
-      idle=0, at, dec, sus, rel
+      idle=0, at=1, dec=2, sus=3, rel=4
     }state;
   public:
     // Attack, Decay, and Release are times in sample ticks
-    Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release);
+    Envelope(uint32_t attack, uint32_t decay, uint8_t sustain, uint32_t release);
     Envelope(const Envelope & src);
     uint8_t update(void);
     void attack(void);
@@ -35,5 +36,5 @@ class Logvelope: public Envelope{
     static uint8_t log2(uint8_t x);
     static uint8_t exp2(uint8_t x);
     uint8_t update(void);
-    Logvelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release):Envelope(attack, decay, log2(sustain), release){}
+    Logvelope(uint32_t attack, uint32_t decay, uint8_t sustain, uint32_t release):Envelope(attack, decay, log2(sustain), release){}
 };

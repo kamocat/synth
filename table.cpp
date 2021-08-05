@@ -1,7 +1,7 @@
 #include "table.hpp"
 
 SineTable::SineTable(){
-  len = 64;
+  len = 65;
   const int8_t step = 3;
   const int8_t bits = 2; // Bit space of step
   const int8_t pad = 8 - bits; // Extra padding for better precision
@@ -31,7 +31,7 @@ int8_t SineTable::lookup(int8_t index){
   return val;
 }
 
-Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release){
+Envelope::Envelope(uint32_t attack, uint32_t decay, uint8_t sustain, uint32_t release){
   state = idle;
   time = 0;
   // Attack slopes from 0 to full value
@@ -44,12 +44,12 @@ Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t re
   s = sustain; 
   // Decay slopes from full value to sustain level
   d = 256 - sustain;
-  d <<= 7;
+  d <<= shift;
   if(decay > 0) // Catch divide-by-zero
     d /= decay;
   // Release slopes from sustain down to zero
     r = s;
-    r <<= 7;
+    r <<= shift;
   if(release > 0) // Catch divide-by-zero
     r /= release;
   /* Divide-by-zero issue:
@@ -73,7 +73,7 @@ uint8_t Envelope::update(void){
     case at:
       time += a;
       if( time >= 0 ){
-        return time >> 7;
+        return time >> shift;
       } else {
         state = dec;
         time = limit - 1;
@@ -81,19 +81,19 @@ uint8_t Envelope::update(void){
       }
     case dec:
       time -= d;
-      tmp = time >> 7;
+      tmp = time >> shift;
       if( tmp > s )
         return tmp;
       else{
         state = sus;
-        time = s << 7;
+        time = s << shift;
       }
     case sus:
       return s;
     case rel:
       time -= r;
       if( time > 0)
-        return time>>7;
+        return time>>shift;
       else{
         time = 0;
         state = idle;

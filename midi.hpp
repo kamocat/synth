@@ -4,6 +4,7 @@
 class Tone{
   public:
     Tone(const Envelope &amplitude, uint16_t fundemental, SineTable * waveform);
+    Tone(const Tone &src);
     ~Tone(void);
     void setEnvelope(Envelope amplitude);
     Envelope getEnvelope(void);

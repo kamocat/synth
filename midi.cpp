@@ -6,6 +6,21 @@ Tone::Tone(const Envelope &amplitude, uint16_t fundemental, SineTable * w){
   fm = 0; // NULL
   level = 0;
   wave = w;
+  t = 0;
+  dt = 1;
+}
+
+Tone::Tone(const Tone &src){
+  root = src.root;
+  amp = new Envelope(*(src.amp));
+  if(src.fm)
+    fm = new Tone(*(src.fm));
+  else
+    fm = 0;
+  level = src.level;
+  wave = src.wave;
+  t = src.t;
+  dt = src.dt;
 }
 
 Tone::~Tone(void){
