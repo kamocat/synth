@@ -59,7 +59,7 @@ Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t re
   */
 }
 
-uint8_t Envelope::update(uint8_t dt, bool pressed){
+uint8_t Envelope::update(uint8_t dt){
   uint8_t tmp;
   switch(state){
     case at:
@@ -76,28 +76,31 @@ uint8_t Envelope::update(uint8_t dt, bool pressed){
       tmp = time >> 7;
       if( tmp > s )
         return tmp;
-      else
-        state = sus;
-    case sus:
-      if( pressed )
-        return s;
       else{
+        state = sus;
         time = s << 7;
-        state = rel;
       }
+    case sus:
+      return s;
     case rel:
       time -= dt * r;
-      if( time > 0){
-        if(pressed)
-          state = at;
+      if( time > 0)
         return time>>7;
-      }else
+      else{
+        time = 0;
         state = idle;
+      }
     default:
-      if(pressed)
-        state = at;
       return 0;
   }
+}
+
+void Envelope::attack(void){
+  state = at;
+}
+
+void Envelope::release(void){
+  state = rel;
 }
 
 uint8_t Logvelope::log2(uint8_t x){

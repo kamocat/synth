@@ -24,7 +24,9 @@ class Envelope{
   public:
     // Attack, Decay, and Release are times in milliseconds
     Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t release);
-    uint8_t update(uint8_t dt, bool pressed);
+    uint8_t update(uint8_t dt);
+    void attack(void);
+    void release(void);
 };
 
 class Logvelope: public Envelope{
