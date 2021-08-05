@@ -1,43 +1,69 @@
 #include "midi.hpp"
 
-Note::Note(Logvelope a, Envelope f, uint8_t r, uint8_t l, uint8_t s){
-  ps = 1000000 / s; // Sample period (microseconds)
-  rate = r;
+Tone::Tone(const Envelope &amplitude, uint16_t fundemental, SineTable * w){
+  root = fundemental;
+  amp = new Envelope(amplitude);
+  fm = 0; // NULL
+  level = 0;
+  wave = w;
+}
+
+Tone::~Tone(void){
+  delete fm;
+  delete amp;
+}
+
+void Tone::setEnvelope(Envelope amplitude){
+  delete amp;
+  amp = new Envelope(amplitude);
+}
+
+Envelope Tone::getEnvelope(void){
+  return *amp;
+}
+
+void Tone::setModulator(Tone m, uint8_t l){
+  fm = new Tone(m);
   level = l;
-  fm = f;
-  amp = a;
-  time = 0;
 }
 
-Note::play(uint8_t pitch, uint16_t duration){
-  time = duration * 1000; // Duration is ms, time is us
-  fm.attack();
-  amp.attack();
-  amp.update(1);
+Tone Tone::getModulator(void){
+  return *fm;
+};
+
+void Tone::setPitch(uint16_t pitch){
+  // 8.8 fixed-point multiply
+  uint32_t tmp = pitch;
+  tmp *= root;
+  tmp >>= 8;
+  dt = tmp;
 }
 
-uint8_t Note::getSound(void){
-  // Update the time
-  int32_t prev = time;
-  time -= ps;
-  uint8_t ms = (prev>>10) - (time>>10);
-  // Update the envelopes
-  if(time < 0 ){
-    fm.release();
-    amp.release();
+int8_t Tone::play(void){
+  if(level){
+    int16_t mod = level;
+    mod *= fm->play();
+    t += mod;
   }
-  uint16_t har = fm.update(ms); // relative harmonic content
-  har *= level;
-  har >>= 8;
-  uint16_t a = amp.update(ms);  // relative amplitude
-  
-  // Get the next sample
-  a *= fm(rate, har, pitch);
-  a >>= 8;
-  return a;
+  t += dt;
+  int16_t out = wave->lookup(t>>8);
+  out *= amp->update();
+  out >>= 8;
+  return out;
 }
 
-bool Note::busy(void){
-  // Should return 0 if not busy
-  return amp.update(0);
+void Tone::attack(void){
+  if(fm)
+    fm->attack();
+  amp->attack();
+}
+
+void Tone::release(void){
+  if(fm)
+    fm->release();
+  amp->release();
+}
+
+bool Tone::busy(void){
+  return (0 != amp->getState());
 }

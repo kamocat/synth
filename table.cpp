@@ -58,12 +58,20 @@ Envelope::Envelope(uint16_t attack, uint16_t decay, uint8_t sustain, uint16_t re
   ** exceptions when the divisor is zero. So this is a workaround.
   */
 }
+Envelope::Envelope(const Envelope & src){
+  this->a = src.a;
+  this->d = src.d;
+  this->s = src.s;
+  this->r = src.r;
+  time = 0;
+  state = idle;
+}
 
-uint8_t Envelope::update(uint8_t dt){
+uint8_t Envelope::update(void){
   uint8_t tmp;
   switch(state){
     case at:
-      time += dt * a;
+      time += a;
       if( time >= 0 ){
         return time >> 7;
       } else {
@@ -72,7 +80,7 @@ uint8_t Envelope::update(uint8_t dt){
         return 255;
       }
     case dec:
-      time -= dt * d;
+      time -= d;
       tmp = time >> 7;
       if( tmp > s )
         return tmp;
@@ -83,7 +91,7 @@ uint8_t Envelope::update(uint8_t dt){
     case sus:
       return s;
     case rel:
-      time -= dt * r;
+      time -= r;
       if( time > 0)
         return time>>7;
       else{
@@ -101,6 +109,10 @@ void Envelope::attack(void){
 
 void Envelope::release(void){
   state = rel;
+}
+
+uint8_t Envelope::getState(void){
+  return state;
 }
 
 uint8_t Logvelope::log2(uint8_t x){
@@ -134,7 +146,7 @@ uint8_t Logvelope::exp2(uint8_t x){
   return tmp;
 }
 
-uint8_t Logvelope::update(uint8_t dt, bool pressed){
-  uint8_t ret = Envelope::update(dt, pressed);
+uint8_t Logvelope::update(void){
+  uint8_t ret = Envelope::update();
   return exp2(ret);
 }
