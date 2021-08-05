@@ -52,6 +52,8 @@ void Tone::setPitch(uint16_t pitch){
   tmp *= root;
   tmp >>= 8;
   dt = tmp;
+  if(fm)
+    fm->setPitch(pitch);
 }
 
 int8_t Tone::play(void){

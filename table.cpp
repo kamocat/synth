@@ -47,9 +47,7 @@ Envelope::Envelope(uint32_t attack, uint32_t decay, uint8_t sustain, uint32_t re
   d <<= shift;
   if(decay > 0) // Catch divide-by-zero
     d /= decay;
-  // Release slopes from sustain down to zero
-    r = s;
-    r <<= shift;
+  r = limit;
   if(release > 0) // Catch divide-by-zero
     r /= release;
   /* Divide-by-zero issue:

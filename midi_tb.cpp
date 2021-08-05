@@ -5,8 +5,6 @@
 #include "midi.hpp"
 #include "audio.hpp"
 
-
-
 int main()
 {
   int hz = 44100;
@@ -15,9 +13,9 @@ int main()
 
   // Configure the synth
   SineTable sine;
-  Tone bell = Tone(Logvelope(hz/100,3*hz,0,hz/20), 0x100, &sine);
-  Tone fm1 = Tone(Envelope(1, hz, 0, hz/4), 0x2EE, &sine);
-  bell.setModulator(fm1, 10);
+  Tone bell = Tone(Logvelope(hz/100,10*hz,0,hz/2), 0x100, &sine);
+  Tone fm1 = Tone(Envelope(10, hz, 120, hz), 0x307, &sine);
+  bell.setModulator(fm1, 15);
   bell.setPitch(0x234);
 
   // Write the audio samples
