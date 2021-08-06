@@ -13,25 +13,32 @@ int main()
 
   // Configure the synth
   SineTable sine;
-  Tone bell = Tone(Logvelope(hz/100,10*hz,0,hz/2), 0x100, &sine);
-  Tone fm1 = Tone(Envelope(10, hz, 120, hz), 0x307, &sine);
-  bell.setModulator(fm1, 15);
-  bell.setPitch(0x234);
+  Tone bell = Tone(Logvelope(hz/100,hz*2,0,hz), 0x300, &sine);
+  Tone fm1 = Tone(Envelope(1, hz, 190, 0), 0x1000, &sine);
+  bell.setModulator(fm1, 90);
+  Tone bell2 = Tone(bell);
 
   // Write the audio samples
-  double seconds = 2;
-  int N = hz * seconds;  // total number of samples
-  int8_t x;
+  int16_t x;
   bell.attack();
-  for (int i = 0; i < N; ++i)
+  bell.setPitch(0x100);
+  for (int i = 0; i < hz*0.8; ++i)
   {
     x = bell.play();
-    w.put( x );
+    w.put( x/2 );
+  }
+  bell2.setPitch(0xE0);
+  bell2.attack();
+  for (int i = 0; i < hz*2; ++i)
+  {
+    x = bell.play() + bell2.play();
+    w.put( x/2 );
   }
   bell.release();
-  for (int i = 0; i < N/2; ++i)
+  bell2.release();
+  for (int i = 0; i < hz; ++i)
   {
-    x = bell.play();
-    w.put( x );
+    x = bell.play() + bell2.play();
+    w.put( x/2 );
   }
 }

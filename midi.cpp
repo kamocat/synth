@@ -58,8 +58,8 @@ void Tone::setPitch(uint16_t pitch){
 
 int8_t Tone::play(void){
   if(level){
-    int16_t mod = level;
-    mod *= fm->play();
+    int16_t mod = fm->play();
+    mod *= level;
     t += mod;
   }
   t += dt;
